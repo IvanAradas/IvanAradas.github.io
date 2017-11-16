@@ -1,0 +1,86 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>index</title><script type="text/javascript">
+//<![CDATA[
+window.__cfRocketOptions = {byc:0,p:0,petok:"94fd0e836e19ea6c7a348a9ab43a53dfa58b32f5-1510832943-1800"};
+//]]>
+</script>
+<script type="text/javascript" src="https://ajax.cloudflare.com/cdn-cgi/scripts/0e574bed/cloudflare-static/rocket.min.js"></script>
+<style></style></head><body id="preview">
+<p><a href="https://electron.atom.io/"><img src="https://camo.githubusercontent.com/11e7cfd04eceb1ea7464e99edda0e7000487f343/68747470733a2f2f656c656374726f6e2e61746f6d2e696f2f696d616765732f656c656374726f6e2d6c6f676f2e737667" alt="Alt text"></a></p>
+<h1><a id="Introduccion_2"></a>Introduccion</h1>
+<p><strong>Electron.js</strong> es una plataforma para desarrollar <strong>aplicaciones de escritorio usando tecnologías web</strong> (HTML, CSS y JavaScript) creada y mantenida por <a href="https://github.com/">Github</a>. Electron.js funciona creando dos tipos de procesos, el <strong>proceso main</strong> y el <strong>proceso renderer</strong>.</p>
+<h4><a id="Main_Process_6"></a>Main Process</h4>
+<p>El primero es un proceso de <a href="https://nodejs.org/es/">Node.js</a>, este es nuestro <em>proceso principal</em>, viene a ser nuestra aplicación en si misma, este proceso tiene acceso a varias API de Electron.js solo para este proceso que <strong>nos ayudan a comunicarnos con el SO y realizar distintas acciones o efectos.</strong></p>
+<h4><a id="Render_Process_10"></a>Render Process</h4>
+<p>El <strong>render</strong> es un proceso de Chromium, con una diferencia, este Chromium tiene un Node.js incorporado y acceso a todos sus módulos y los que instalemos con npm (esto nos permitiría usar React.js, Angular.js, Polymer, etc. para desarrollar nuestra UI o cualquier otra librería básicamente), por lo que desde nuestro renderer <strong>podemos usar módulos como fs para leer y escribir en el disco, o hacer peticiones a una base de datos directamente.</strong></p>
+<p>Además de acceder a los módulos de Node.js y npm, Electron.js nos da acceso a una pocas API en este proceso igual que hace con el <strong>proceso main.</strong></p>
+<p><img src="https://static.platzi.com/blog/uploads/2016/08/electron-process-894x1024.png" alt="Alt text"></p>
+<h4><a id="Ventajas_18"></a>Ventajas</h4>
+<ul>
+<li>Crear aplicaciones de escritorio usando tecnologías web conocidas (Javascript/CoffeeScript/ES6, HTML 5, CSS 3) como librerías asociadas (jQuery, React, Bootstrap, etc.)</li>
+<li>Desarrollar aplicaciones multiplataforma (Windows, Mac OS X y Linux) sin necesidad de generar parches para que éstas funcionen.</li>
+<li>Libertad y homogeneidad en el diseño visual de la aplicación.</li>
+</ul>
+<p>En el presente post, vamos a crear un <strong>Hola Mundo</strong> con Electron. Algo sencillo, pero que nos permitirá entender como funciona nuestra aplicación.</p>
+<p>Antes de comenzar con el tutorial, debes verificar que <a href="https://nodejs.org/es/download/package-manager/">Node.js</a> y <a href="https://www.npmjs.com/get-npm?utm_source=house&amp;utm_medium=homepage&amp;utm_campaign=free%20orgs&amp;utm_term=Install%20npm">npm</a> están <em>instalados</em> en tu computador.</p>
+<h1><a id="Tutorial_28"></a>Tutorial</h1>
+<p>Primero, debemos crear un directorio en el cual colocaremos los archivos de nuestra aplicación.<br>
+Luego debemos iniciar un proyecto Node.js usando: <code>npm init</code> y completar los datos correspondientes.</p>
+<h2><a id="Instalar_y_Configurar_Electron_33"></a>Instalar y Configurar Electron</h2>
+<p>Después de iniciar nuestro proyecto, debemos instalar el paquete <code>electron-prebuilt</code> en nuestra aplicación como dependencia de desarrollo. Y debemos ejecutar el comando <code>npm install --save-dev electron-prebuilt</code>.</p>
+<p>Después debemos configurar el archivo <code>package.json</code> de tal forma que <code>scripts</code> quede asi:</p>
+<pre><code>  &quot;scripts&quot;: {
+    &quot;start&quot;: &quot;electron index.js&quot;
+  },
+</code></pre>
+<p>Esto permite ejecutar nuestra aplicacion con el comando <code>npm start</code>.</p>
+<p>Luego de configurar el archivo anterior, debemos <strong>crear</strong> el archivo <code>index.js</code> y llenarlo con este codigo:</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">var</span> electron = <span class="hljs-built_in">require</span>(<span class="hljs-string">'electron'</span>);
+<span class="hljs-keyword">var</span> app = electron.app;
+<span class="hljs-keyword">var</span> BrowserWindow = electron.BrowserWindow;
+
+app.on(<span class="hljs-string">'ready'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+  <span class="hljs-keyword">var</span> mainWindow = <span class="hljs-keyword">new</span> BrowserWindow({
+    width: <span class="hljs-number">600</span>,
+    height: <span class="hljs-number">400</span>
+  });
+  mainWindow.loadURL(<span class="hljs-string">'file://'</span> + __dirname + <span class="hljs-string">'/index.html'</span>)
+});
+</code></pre>
+<p>Si no entendes que significa cada parte del codigo, no te preocupes, ahora lo explicaremos detalladamente.</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> electron = <span class="hljs-built_in">require</span>(<span class="hljs-string">'electron'</span>);  
+<span class="hljs-keyword">const</span> app = electron.app;  
+<span class="hljs-keyword">const</span> BrowserWindow = electron.BrowserWindow;  
+</code></pre>
+<p>La primera linea importa el módulo electron para poder ser usado en nuestra aplicación. Las siguientes dos lineas representan objetos asociados a una aplicación hecha en Electron. El singleton <code>electron.app</code>, el cual está encargado de manejar el ciclo de vida de nuestra aplicación. Es decir, que debe hacer nuestra aplicación cuando se abre, se cierra, se abre una nueva ventana, etc y la clase <code>BrowserWindow</code>, que permite crear ventanas en las cuales podemos insertar las distintas pantallas de nuestra aplicación.</p>
+<p>Y finalmente:</p>
+<pre><code class="language-javascript">app.on(<span class="hljs-string">'ready'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+  <span class="hljs-keyword">var</span> mainWindow = <span class="hljs-keyword">new</span> BrowserWindow({
+    width: <span class="hljs-number">600</span>,
+    height: <span class="hljs-number">400</span>
+  });
+  mainWindow.loadURL(<span class="hljs-string">'file://'</span> + __dirname + <span class="hljs-string">'/index.html'</span>)
+});
+</code></pre>
+<p>Éste indica que cuando la aplicación se encuentre lista, se debe crear una ventana de 800x600 píxeles y que se asocia a la variable <code>mainWindow</code>, declarada mas arriba. Luego, en dicha ventana se cargará el archivo <code>index.html</code>, relativo a la carpeta donde se ejecuta el archivo de código. Y definir que al cerrar dicha ventana se debe eliminar la referencia a ésta.</p>
+<p>Podemos observar que utilizamos la variable global <code>mainWindow</code>. Esto ya que si se declara dentro del callback del evento <code>ready</code> la referencia a la ventana se perderá, dado que el Garbage Collector eliminará nuestra ventana por no tener referencia a ninguna variable. Lo que resultará en una ventana no existente.</p>
+<h3><a id="Archivo_HTML_88"></a>Archivo HTML</h3>
+<p>Como indicamos en el archivo creado anteriormente, la ventana de nuestra aplicación mostrará el contenido del archivo <code>index.html</code>, por lo que hay que <strong>crearlo</strong> y ponerle este texto:</p>
+<pre><code class="language-html"><span class="hljs-doctype">&lt;!doctype html&gt;</span>  
+<span class="hljs-tag">&lt;<span class="hljs-title">html</span>&gt;</span>  
+  <span class="hljs-tag">&lt;<span class="hljs-title">head</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">meta</span> <span class="hljs-attribute">charset</span>=<span class="hljs-value">"utf-8"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">title</span>&gt;</span>Hola Mundo!<span class="hljs-tag">&lt;/<span class="hljs-title">title</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">head</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">body</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">h1</span>&gt;</span>HOLA MUNDO!<span class="hljs-tag">&lt;/<span class="hljs-title">h1</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>Ésta es una aplicación hecha con Electron.<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">html</span>&gt;</span>  
+</code></pre>
+<h1><a id="Ejecucion_105"></a>Ejecucion</h1>
+<p>Finalmente, para ejecutar nuestra aplicación debemos ejecutar el comando <code>electron .</code>  . Si no aparece ningún error, aparecerá una aplicación similar a la de la siguiente imágen:</p>
+<p><img src="https://image.ibb.co/fedjJw/1506638225585483.png" alt="Alt text"></p>
+<p>Eso es todo</p>
+<h4><a id="Muchas_Gracias_113"></a>Muchas Gracias</h4>
+
+</body></html>
